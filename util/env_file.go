@@ -2,27 +2,29 @@ package util
 
 import (
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
-type EnvFile struct {
+type DotEnv struct {
 	envVariables map[string]string
 }
 
-func NewEnvFile() (*EnvFile, error) {
+func NewDotEnv() *DotEnv {
 	data, err := ioutil.ReadFile(".env")
 	if err != nil {
-		return nil, err
+		return &DotEnv{
+			envVariables: nil,
+		}
 	}
-
 	dataStr := string(data)
 	variables := parseEnvString(dataStr)
 
-	envFile := &EnvFile{
+	envFile := &DotEnv{
 		envVariables: variables,
 	}
 
-	return envFile, nil
+	return envFile
 }
 
 func parseEnvString(env string) map[string]string {
@@ -35,6 +37,9 @@ func parseEnvString(env string) map[string]string {
 	return envMap
 }
 
-func (ef *EnvFile) GetVariable(key string) string {
-	return ef.envVariables[key]
+func (ef *DotEnv) GetVariable(key string) string {
+	if ef.envVariables != nil {
+		return ef.envVariables[key]
+	}
+	return os.Getenv(key)
 }

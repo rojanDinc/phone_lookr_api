@@ -27,16 +27,10 @@ func closeApplicationHandler() {
 	}()
 }
 
-var environment *util.EnvFile
-
 func bootstrapDependencies() *mux.Router {
 	closeApplicationHandler()
-	env, err := util.NewEnvFile()
-	environment = env
-	if err != nil {
-		panic(err)
-	}
-	apiKeyMiddleware := middleware.NewApiKeyMiddleware(environment.GetVariable("API_KEY"))
+	env := util.NewDotEnv()
+	apiKeyMiddleware := middleware.NewApiKeyMiddleware(env.GetVariable("API_KEY"))
 	siteToScrape := "https://www.180.se/nummer/"
 	reviewRepository := persistence.NewSyncMapReviewRepository()
 	scrapeSvc := service.NewScrapeService(reviewRepository, siteToScrape)
@@ -57,5 +51,9 @@ func bootstrapDependencies() *mux.Router {
 
 func main() {
 	r := bootstrapDependencies()
-	log.Fatal(http.ListenAndServe(":8810", r))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8810"
+	}
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
