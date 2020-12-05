@@ -85,7 +85,7 @@ func (svc *scrapeService) scrapeReportedByCount(review *model.Review, callbackEr
 
 func (svc *scrapeService) scrapeLastSearchedOn(review *model.Review, callbackError error) {
 	svc.c.OnHTML("div.ai-row-1-cell:nth-child(3) > div:nth-child(2)", func(e *colly.HTMLElement) {
-		date := strings.Replace(e.Text, "den ", "", 0)
+		date := strings.Replace(e.Text, "den ", "", 1)
 		callbackError = nil
 		review.LastSearch = date
 	})
