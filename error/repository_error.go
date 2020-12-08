@@ -15,5 +15,13 @@ type (
 )
 
 func (e RepositoryAddError) Error() string {
-	return fmt.Sprintf("Persistence error occurred: %w", e.InnerError)
+	return fmt.Sprintf("Repository error occurred: %v", e.InnerError)
+}
+
+func (e RepositoryFindError) Error() string {
+	return fmt.Sprintf("Repository error occurred: %v", e.InnerError)
+}
+
+func (e RepositoryRemoveError) Error() string {
+	return fmt.Sprintf("Repository error occurred: %v", e.InnerError)
 }
