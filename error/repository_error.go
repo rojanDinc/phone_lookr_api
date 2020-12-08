@@ -15,5 +15,5 @@ type (
 )
 
 func (e RepositoryAddError) Error() string {
-	return fmt.Sprintf("Persistence error occured: %w", e.InnerError)
+	return fmt.Sprintf("Persistence error occurred: %w", e.InnerError)
 }
