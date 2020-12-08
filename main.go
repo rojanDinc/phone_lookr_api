@@ -29,24 +29,34 @@ func closeApplicationHandler() {
 
 func bootstrapDependencies() *mux.Router {
 	closeApplicationHandler()
+	// Config
 	env := util.NewDotEnv()
-	apiKeyMiddleware := middleware.NewApiKeyMiddleware(env.GetVariable("API_KEY"))
 	siteToScrape := "https://www.180.se/nummer/"
+
+	// Repositories
 	reviewRepository := persistence.NewSyncMapReviewRepository()
+
+	// Services
 	scrapeSvc := service.NewScrapeService(reviewRepository, siteToScrape)
+
+	// Middleware
+	apiKeyMiddleware := middleware.NewApiKeyMiddleware(env.GetVariable("API_KEY"))
+
+	// Controllers
 	reviewController := controller.NewReviewController(scrapeSvc)
+
+	// Routing
+	router := mux.NewRouter()
 	cors := handlers.CORS(
 		handlers.AllowedHeaders([]string{"Content-Type"}),
 		handlers.AllowedOrigins([]string{"*"}),
 		handlers.AllowCredentials(),
 	)
-	// Routing
-	r := mux.NewRouter()
-	r.Use(apiKeyMiddleware.CheckAPIKey)
-	r.Use(cors)
-	r.HandleFunc("/{phoneNumber}", reviewController.LookUpTelephoneNumber()).Methods(http.MethodGet, http.MethodOptions)
+	router.Use(cors)
+	router.Use(apiKeyMiddleware.CheckAPIKey)
+	router.HandleFunc("/{phoneNumber}", reviewController.LookUpTelephoneNumber()).Methods(http.MethodGet, http.MethodOptions)
 
-	return r
+	return router
 }
 
 func main() {
