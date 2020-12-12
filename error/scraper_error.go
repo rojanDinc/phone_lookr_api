@@ -1,6 +1,8 @@
 package app_error
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type SiteCouldNotBeReachedError struct {
 	Url        string
@@ -8,5 +10,5 @@ type SiteCouldNotBeReachedError struct {
 }
 
 func (e SiteCouldNotBeReachedError) Error() string {
-	return fmt.Sprintf("Site %s could not be reached at this moment. %w", e.Url, e.InnerError)
+	return fmt.Sprintf("Site %s could not be reached at this moment. %v", e.Url, e.InnerError)
 }
