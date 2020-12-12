@@ -2,4 +2,4 @@ language: go
 
 go:
   - 1.14
-script: run_tests.sh
+script: bash run_tests.sh
