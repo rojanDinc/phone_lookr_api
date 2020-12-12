@@ -1,1 +1,1 @@
-go test ./... -v -cover -coverprofile=test_coverage.out
+go test ./... -v
