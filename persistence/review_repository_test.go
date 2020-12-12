@@ -116,7 +116,7 @@ func TestRemovingNonExistentReviewAndFail(t *testing.T) {
 	// Act
 	err := repo.Remove("some number")
 	// Assert
-	if err != nil {
-		t.Error("Expected to fail when removing a non existent review.")
+	if err == nil {
+		t.Error("Expected to get error when removing a non existent review.")
 	}
 }
