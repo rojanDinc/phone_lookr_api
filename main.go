@@ -30,7 +30,11 @@ func closeApplicationHandler() {
 func bootstrapDependencies() *mux.Router {
 	closeApplicationHandler()
 	// Config
-	env := util.NewDotEnv()
+	fr := util.NewFileReader(".env")
+	err := util.LoadDotEnvFile(fr)
+	if err != nil {
+		panic(err)
+	}
 	siteToScrape := "https://www.180.se/nummer/"
 
 	// Repositories
@@ -40,7 +44,7 @@ func bootstrapDependencies() *mux.Router {
 	scrapeSvc := service.NewScrapeService(reviewRepository, siteToScrape)
 
 	// Middleware
-	apiKeyMiddleware := middleware.NewApiKeyMiddleware(env.GetVariable("API_KEY"))
+	apiKeyMiddleware := middleware.NewApiKeyMiddleware(os.Getenv("API_KEY"))
 
 	// Controllers
 	reviewController := controller.NewReviewController(scrapeSvc)
